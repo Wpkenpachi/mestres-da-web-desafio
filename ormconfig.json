@@ -1,0 +1,21 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "mestres-da-web",
+  "entities": [
+    "./src/models/**/*.ts"
+  ],
+  "migrations": [
+    "./database/migrations/**/*.ts"
+  ],
+  "seeds": [
+    "./database/seeds/**/*.ts"
+  ],
+  "cli": {
+    "entitiesDir": "./src/models",
+    "migrationsDir": "./database/migrations"
+  }
+}

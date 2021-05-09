@@ -1,0 +1,38 @@
+{
+  "name": "node-http-server",
+  "version": "1.0.0",
+  "description": "NodeJs + Typescript + ESlint Boilerplate",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon",
+    "dev": "npm run build && npm run start build/server.ts",
+    "build": "rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts",
+    "sync:tables": "ts-node ./node_modules/typeorm/cli.js schema:sync"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^3.0.1",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
+    "@types/jsonwebtoken": "^8.5.1",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.6.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.32"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "eslint": "^6.8.0",
+    "nodemon": "1.18.4",
+    "rimraf": "3.0.2",
+    "ts-node": "8.8.1",
+    "typescript": "3.8.3"
+  },
+  "keywords": []
+}
