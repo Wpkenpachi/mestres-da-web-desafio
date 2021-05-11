@@ -34,16 +34,16 @@ export const isContentCreator = (req: Request, res: Response, next: NextFunction
   }
 
   jwt.verify(getTokenFromAuthorizationHeader(token), APP_KEY as string, (err: any, decoded: any) => {
-    if (err) {
-      statusCode = 401
-      responsePayload = {
-        err: err?.name,
-        message: err?.message
-      }
-    }
     const checkRoleRepository = getCustomRepository(CheckUserRoleRepository)
     checkRoleRepository.checkContentCreatorRole(decoded?.id as string).then( (userRole: any) => {
-      return err ? res.status(statusCode).json(responsePayload) : next()
+      if (err || !userRole) {
+        statusCode = 401
+        responsePayload = {
+          err: err?.name,
+          message: err?.message
+        }
+      }
+      return !userRole ? res.status(statusCode).json(responsePayload) : next()
     })
   })
 }
@@ -62,16 +62,16 @@ export const isContentManager = (req: Request, res: Response, next: NextFunction
   }
 
   jwt.verify(getTokenFromAuthorizationHeader(token), APP_KEY as string, (err: any, decoded: any) => {
-    if (err) {
-      statusCode = 401
-      responsePayload = {
-        err: err?.name,
-        message: err?.message
-      }
-    }
     const checkRoleRepository = getCustomRepository(CheckUserRoleRepository)
     checkRoleRepository.checkContentManagerRole(decoded?.id as string).then( (userRole: any) => {
-      return err ? res.status(statusCode).json(responsePayload) : next()
+      if (err || !userRole) {
+        statusCode = 401
+        responsePayload = {
+          err: err?.name,
+          message: err?.message
+        }
+      }
+      return !userRole ? res.status(statusCode).json(responsePayload) : next()
     })
   })
 }
@@ -90,16 +90,16 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction): any | 
   }
 
   jwt.verify(getTokenFromAuthorizationHeader(token), APP_KEY as string, (err: any, decoded: any) => {
-    if (err) {
-      statusCode = 401
-      responsePayload = {
-        err: err?.name,
-        message: err?.message
-      }
-    }
     const checkRoleRepository = getCustomRepository(CheckUserRoleRepository)
     checkRoleRepository.checkAdminRole(decoded?.id as string).then( (userRole: any) => {
-      return err ? res.status(statusCode).json(responsePayload) : next()
+      if (err || !userRole) {
+        statusCode = 401
+        responsePayload = {
+          err: err?.name,
+          message: err?.message
+        }
+      }
+      return !userRole ? res.status(statusCode).json(responsePayload) : next()
     })
   })
 }

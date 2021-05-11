@@ -7,6 +7,11 @@ export enum MovieStatus {
   UNAUTHORIZED = 'UNAUTHORIZED'
 }
 
+export enum MovieOrderByAttributes {
+  TITLE = 'title',
+  RELEASE_DATE = 'release_date'
+}
+
 @Entity()
 export class Movie {
   @PrimaryGeneratedColumn("uuid")

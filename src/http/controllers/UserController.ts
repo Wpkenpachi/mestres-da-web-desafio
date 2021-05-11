@@ -12,21 +12,19 @@ async function hashPassword(pass: string): Promise<string> {
 export const store = async (req: Request, res: Response): Promise<Response> => {
   // getting body
   const newUser = req.body;
-  const role: RoleTypes = newUser.role
+  const selectedRole: RoleTypes = newUser.role
   try {
-    // [GETTING USER ROLE]
     const roleRepository = getRepository(Role)
-    const adminRole = await roleRepository.findOne({ slug: role })
-    // [ CREATE ADMIN USER ]
-    // storing new user
+    const role = await roleRepository.findOne({ slug: selectedRole })
     const userRepository = getRepository(User)
+    if (!role) throw new Error('This role does not exist')
     newUser.password = await hashPassword(newUser.password)
-    newUser.role = adminRole
+    newUser.role = role
     const createdUser = await userRepository.save(newUser)
-    return createdUser && adminRole ? res.status(201).send() : res.status(400).send(`User ${role} could not be created`)
+    return createdUser && role ? res.status(201).send() : res.status(400).send(`User ${role} could not be created`)
   } catch (error) {
     return res.status(500).json({
-      err: error
+      err: error.message
     })
   }
 }

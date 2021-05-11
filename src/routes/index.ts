@@ -1,43 +1,39 @@
-import { Router } from 'express'
+import { Request, Response, Router } from 'express'
 const route = Router()
 import { isContentCreator, isAdmin, isContentManager, isRefreshToken } from '../http/middlewares/jwt'
 import { index } from '../http/controllers/HomeController'
 import * as UserController from '../http/controllers/UserController'
 import * as AuthController from '../http/controllers/AuthController'
 import * as MovieController from '../http/controllers/MovieController'
+import { validate, ValidationError } from 'express-validation'
+import { loginValidation, refreshTokenValidation } from '../http/validators/auth'
+import { authorizeMovieValidation, listPublicMoviesValidation, storeMovieValidation } from '../http/validators/movies'
+
+const validationOptions = {
+  context: true,
+  keyByField: true
+}
 
 route.get('/', index)
 
-route.post('/user', UserController.store)
-route.post('/login', AuthController.login)
-route.get('/refresh/token', isRefreshToken, AuthController.refreshToken)
+// ADMIN
+route.post('/user', isAdmin, UserController.store)
 
-route.get('/test', function (req, res) {
-  console.log((req.header('Authorization') as string))
-  res.json()
-})
-
-// Movies
-route.post('/movie', isContentCreator, MovieController.store)
+// Refresh Token
+route.get('/refresh/token', isRefreshToken, validate(refreshTokenValidation), AuthController.refreshToken)
 
 
-// Checking Authentications
-route.get('/isadmin', isAdmin, (req, res) => {
-  res.json({
-    message: 'Authenticated Admin!'
-  })
-})
+// Public
+route.post('/login', validate(loginValidation), AuthController.login)
+route.get('/movie', validate(listPublicMoviesValidation), MovieController.listPublicMovies)
 
-route.get('/iscreator', isContentCreator, (req, res) => {
-  res.json({
-    message: 'Authenticated Content Creator!'
-  })
-})
 
-route.get('/ismanager', isContentManager, (req, res) => {
-  res.json({
-    message: 'Authenticated Content Creator!'
-  })
-})
+// Movies [Creator]
+route.post('/movie', isContentCreator, validate(storeMovieValidation), MovieController.store)
+
+
+// Movies [Manager]
+route.post('/movie/authorize', isContentManager, validate(authorizeMovieValidation), MovieController.authorizeMovie)
+route.get('/movie/waiting', isContentManager, MovieController.listWaitingMovies)
 
 export default route
